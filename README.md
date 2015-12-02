@@ -7,9 +7,9 @@ short_description: This module returns a list of package updates that apply to a
 author: chris procter @chr15p
 requirements:
 	- yum to be installed
+`
 
-options:
-# One or more of the following
+`options:
     fields:
         description:
             - the fields of the package name to return
@@ -38,14 +38,16 @@ options:
         default: null
         choices: []
 		alises: []
-'''
+`
 
-EXAMPLES = '''
+`
+EXAMPLES = 
 -  checkupdate: name="kernel$" fields="name"
 -  ansible servername -m checkupdate  -a "fields=arch name=kernel"
-'''
+`
 
-RETURN = '''
+`
+RETURN = 
 updates:
     description: json list of packages that can be updated
     returned: success
