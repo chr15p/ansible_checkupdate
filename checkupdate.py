@@ -1,6 +1,4 @@
-# ansible_checkupdate
-
-This is a short ansible module that returns a list of updates that can be applied to the server. It does not apply them.
+#!/usr/bin/python
 
 DOCUMENTATION = '''
 ---
@@ -55,10 +53,52 @@ updates:
 '''
 
 
+from ansible.module_utils.basic import *
+import yum
+import json
+import re
 
-it takes three parameters (all optional)
-disablerepo:
-name:
-fields:
 
-ansible servername-m checkupdate  -a "fields=arch name=kernel-tools$"
+def main():
+	module = AnsibleModule(
+		argument_spec = dict(
+			disablerepo = dict(required=False, type='list', default=[]),
+			name = dict(required=False),
+			fields=dict(required=False, choices=['name','version','release','arch','all'],default='all'),
+		),
+		supports_check_mode=True,
+	)
+	repos=module.params.get('disablerepo',[])
+	name = module.params['name']
+	fields = module.params['fields']
+	#if reqpkgname:
+	#	 nameregexp = re.compile(reqpkgname)
+
+	yb = yum.YumBase()
+	for r in repos:
+		yb.repos.disableRepo(r)
+
+	pl = yb.doPackageLists(pkgnarrow='updates')
+
+	updates=[]
+	if pl.updates:
+		#print "Updates Packages"
+		for pkg in sorted(pl.updates):
+			if name and re.search(name, pkg.name)==None:
+				continue
+			if fields=='all' or fields=='arch':	
+				pkgname="%s-%s-%s.%s"%(pkg.name, pkg.version, pkg.release,pkg.arch)
+			elif fields=='release':
+				pkgname="%s-%s-%s"%(pkg.name, pkg.version, pkg.release)
+			elif fields=='version':
+				pkgname="%s-%s"%(pkg.name, pkg.version)
+			else:
+				pkgname="%s"%(pkg.name)
+			updates.append(pkgname)
+
+	module.exit_json(changed=False, updates=json.dumps(updates))
+
+
+if __name__ == '__main__':
+    main()
+

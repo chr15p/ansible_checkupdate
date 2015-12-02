@@ -1,0 +1,9 @@
+---
+- name: test
+  hosts: 
+    - ose-master.chrisprocter.co.uk
+    - ose-node2.chrisprocter.co.uk
+  tasks:
+    - name: test 
+      checkupdate: name="kernel$"
+
