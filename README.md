@@ -2,13 +2,12 @@
 
 This is a short ansible module that returns a list of updates that can be applied to the server. It does not apply them.
 
-DOCUMENTATION = '''
----
-module: checkupdate
+`module: checkupdate
 short_description: This module returns a list of package updates that apply to a server. It does not change the server in any way.
 author: chris procter @chr15p
 requirements:
 	- yum to be installed
+
 options:
 # One or more of the following
     fields:
@@ -53,12 +52,5 @@ updates:
     type: list
     sample: "[\"kernel-3.10.0-327.el7.x86_64\", \"kernel-tools-3.10.0-327.el7.x86_64\", \"kernel-tools-libs-3.10.0-327.el7.x86_64\"]"
 '''
+`
 
-
-
-it takes three parameters (all optional)
-disablerepo:
-name:
-fields:
-
-ansible servername-m checkupdate  -a "fields=arch name=kernel-tools$"
